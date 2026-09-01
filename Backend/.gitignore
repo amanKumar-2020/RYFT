@@ -1,28 +1,22 @@
-# Dependencies
 node_modules/
-
-# Build output
-dist/
-*.tsbuildinfo
-
-# Environment files
 .env
 .env.*
-!.env.example
 
-# Logs
 logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# Test coverage
 coverage/
+.nyc_output/
 
-# Editor and operating system files
+build/
+dist/
+
 .DS_Store
 Thumbs.db
-.idea/
+
+# Optional editor files
 .vscode/
+.idea/

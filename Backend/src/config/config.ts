@@ -1,11 +1,11 @@
 import "dotenv/config";
 
-type GetEnv = (key: string, required?: boolean) => string;
+type GetEnv = (key:string, required?:boolean)=> string;
 
 const getEnv: GetEnv = (key, required = true) => {
   const value = process.env[key];
   if (!value && required) {
-    console.error(`Error: ${key} is not define in the environment variables`);
+    console.error(`Error :${key} is not define in the enviroment variables`);
     process.exit(1);
   }
   return value as string;

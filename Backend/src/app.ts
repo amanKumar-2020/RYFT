@@ -1,12 +1,12 @@
-import express, { Request, Response } from "express";
+import express from "express";
 import connectToDB from "./config/database";
 
 const app = express();
+
+// Middleware
+app.use(express.json());
+
+//connect to database
 connectToDB();
-
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
-});
 
 export default app;
