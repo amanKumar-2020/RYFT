@@ -11,9 +11,9 @@ export const validateRegister = z.object({
   contact: z
     .string()
     .trim()
-    .refine((val) => validator.isMobilePhone(val), {
-      message: "Please provide a valid mobile phone number",
+    .refine((val) => validator.isMobilePhone(val, "en-IN"), {
+      message: "Please provide a valid Indian mobile number",
     }),
   password: z.string().trim().min(4, "password must be at least 4"),
-  role: z.enum(["buyer", "seller"]).default("buyer"),
+  isSeller: z.boolean().default(false),
 });
