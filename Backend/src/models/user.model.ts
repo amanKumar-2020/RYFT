@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 
 interface IUser {
-  fullname: string;
+  fullName: string;
   email: string;
   contact?: string;
   password?: string;
@@ -13,7 +13,7 @@ interface IUserMethods {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const userSchema = new mongoose.Schema<IUser ,{},IUserMethods>({
+const userSchema = new mongoose.Schema<IUser, {}, IUserMethods>({
   fullName: {
     type: String,
     required: true,
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema<IUser ,{},IUserMethods>({
   },
   contact: {
     type: String,
-    unique:true
+    unique: true,
   },
   password: {
     type: String,

@@ -1,4 +1,4 @@
-import config from "../config/config"
+import config from "../config/config";
 import { Request, Response } from "express";
 import User from "../models/user.model";
 import jwt from "jsonwebtoken";
@@ -30,7 +30,7 @@ const registerController = async function (req: Request, res: Response) {
       $or: [{ email }, { contact }],
     });
     if (existingUser) {
-      return res.status(400).json({message: "User already exists"});
+      return res.status(400).json({ message: "User already exists" });
     }
     // interface NewUser {
     //   fullName: string;
@@ -39,18 +39,17 @@ const registerController = async function (req: Request, res: Response) {
     //   contact: string;
     //   isSeller: boolean;
     // }
-   
+
     const newUser = new User({
-        fullName,
-        email,
-        password,
-        contact,
-        role :isSeller ? "seller" : "buyer"
-    })
+      fullName,
+      email,
+      password,
+      contact,
+      role: isSeller ? "seller" : "buyer",
+    });
     await newUser.save();
 
-     sendTokenResponse(newUser, res, "User registered successfully");
-
+    sendTokenResponse(newUser, res, "User registered successfully");
   } catch (error) {
     console.log(error);
     return res.status(500).json({
