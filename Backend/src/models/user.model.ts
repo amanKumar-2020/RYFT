@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
 interface IUser {
@@ -13,7 +13,8 @@ interface IUserMethods {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-const userSchema = new mongoose.Schema<IUser, {}, IUserMethods>({
+type UserModel = Model<IUser, {}, IUserMethods>;
+const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   fullName: {
     type: String,
     required: true,
@@ -29,9 +30,11 @@ const userSchema = new mongoose.Schema<IUser, {}, IUserMethods>({
   contact: {
     type: String,
     unique: true,
+    sparse: true
   },
   password: {
     type: String,
+    select: false,
     required: function (this: IUser) {
       return !this.googleId;
     },
@@ -58,6 +61,6 @@ userSchema.methods.comparePassword = async function (
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model<IUser, UserModel>("User", userSchema);
 
 export default User;
