@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { email, optional, z } from "zod";
 import validator from "validator";
 
 export const validateRegister = z.object({
@@ -17,3 +17,19 @@ export const validateRegister = z.object({
   password: z.string().trim().min(4, "password must be at least 4"),
   isSeller: z.boolean().default(false),
 });
+
+export const validateLogin = z
+  .object({
+    email: z.email("Invalid Email").trim().optional(),
+    contact: z.string().trim().optional(),
+    password: z.string().trim().min(4, "password must be at least 4"),
+  })
+  .refine(
+    (data) => {
+      return !!data.email || !!data.contact;
+    },
+    {
+      message: "You must provide either an email or a phone number",
+      path: ["email"], 
+    },
+  );

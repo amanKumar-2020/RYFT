@@ -32,13 +32,6 @@ const registerController = async function (req: Request, res: Response) {
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
-    // interface NewUser {
-    //   fullName: string;
-    //   email: string;
-    //   password: string;
-    //   contact: string;
-    //   isSeller: boolean;
-    // }
 
     const newUser = new User({
       fullName,
@@ -59,6 +52,8 @@ const registerController = async function (req: Request, res: Response) {
   }
 };
 
-const loginController = async function (req: Request, res: Response) {};
+const loginController = async function (req: Request, res: Response) {
+  
+};
 
 export { loginController, registerController };
