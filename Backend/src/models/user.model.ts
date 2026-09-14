@@ -30,7 +30,7 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   contact: {
     type: String,
     unique: true,
-    sparse: true
+    sparse: true,
   },
   password: {
     type: String,
@@ -41,6 +41,8 @@ const userSchema = new mongoose.Schema<IUser, UserModel, IUserMethods>({
   },
   googleId: {
     type: String,
+    unique: true,
+    sparse: true,
   },
   role: {
     type: String,
