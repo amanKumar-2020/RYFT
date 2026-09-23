@@ -4,6 +4,7 @@ import User from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { validateLogin, validateRegister } from "../validator/auth.validator";
 // import {z} from "zod"
+import {UserTypes} from "../../src/types/auth.types"
 
 //  type NewUser = z.infer<typeof validateRegister>;
 
@@ -31,7 +32,7 @@ function sendTokenResponse(
 const registerController = async function (req: Request, res: Response) {
   // const { fullName, email, password, contact, isSeller } = req.body;
   try {
-    const { fullName, email, password, contact, isSeller } =
+    const { fullName, email, password, contact, role } =
       validateRegister.parse(req.body);
     const existingUser = await User.findOne({
       $or: [{ email }, { contact }],
@@ -45,7 +46,7 @@ const registerController = async function (req: Request, res: Response) {
       email,
       password,
       contact,
-      role: isSeller ? "seller" : "buyer",
+      role,
     });
     await newUser.save();
 
@@ -63,10 +64,8 @@ const loginController = async function (req: Request, res: Response) {
   try {
     const { email, contact, password } = validateLogin.parse(req.body);
 
-    const condition = [];
-    if (email) condition.push({ email });
-    if (contact) condition.push({ contact });
-    const isUserExist = await User.findOne({ $or: condition }).select(
+    const condition = email ? {email}:{contact};
+    const isUserExist = await User.findOne(condition ).select(
       "+password",
     );
     if (!isUserExist) {
@@ -90,4 +89,23 @@ const loginController = async function (req: Request, res: Response) {
   }
 };
 
-export { loginController, registerController };
+const getMe = async function(req:Request,res:Response) {
+  const user = req.user;
+  if(!user){
+    return res.status(400).json({
+      message: "Not authenticated",
+    });
+  }
+  res.status(200).json({
+    message: "User fetched successfully",
+    user: {
+      id: user._id,
+      email: user.email,
+      contact: user.contact,
+      fullName: user.fullName,
+      role: user.role,
+    },
+  });
+}
+
+export { loginController, registerController ,getMe};

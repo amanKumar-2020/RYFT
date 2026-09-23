@@ -15,7 +15,7 @@ export const validateRegister = z.object({
       message: "Please provide a valid Indian mobile number",
     }),
   password: z.string().trim().min(4, "password must be at least 4"),
-  isSeller: z.boolean().default(false),
+  role: z.boolean().default(false),
 });
 
 export const validateLogin = z
