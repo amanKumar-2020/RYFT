@@ -4,7 +4,7 @@ import User from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { validateLogin, validateRegister } from "../validator/auth.validator";
 // import {z} from "zod"
-import {UserTypes} from "../../src/types/auth.types"
+// import {UserTypes} from "../../src/types/auth.types"
 
 //  type NewUser = z.infer<typeof validateRegister>;
 
