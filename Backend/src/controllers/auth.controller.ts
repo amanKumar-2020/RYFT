@@ -3,10 +3,7 @@ import { Request, Response } from "express";
 import User from "../models/user.model";
 import jwt from "jsonwebtoken";
 import { validateLogin, validateRegister } from "../validator/auth.validator";
-// import {z} from "zod"
-// import {UserTypes} from "../../src/types/auth.types"
-
-//  type NewUser = z.infer<typeof validateRegister>;
+import passport from "../config/passport";
 
 function sendTokenResponse(
   user: InstanceType<typeof User>,
@@ -32,8 +29,9 @@ function sendTokenResponse(
 const registerController = async function (req: Request, res: Response) {
   // const { fullName, email, password, contact, isSeller } = req.body;
   try {
-    const { fullName, email, password, contact, role } =
-      validateRegister.parse(req.body);
+    const { fullName, email, password, contact, role } = validateRegister.parse(
+      req.body,
+    );
     const existingUser = await User.findOne({
       $or: [{ email }, { contact }],
     });
@@ -64,10 +62,8 @@ const loginController = async function (req: Request, res: Response) {
   try {
     const { email, contact, password } = validateLogin.parse(req.body);
 
-    const condition = email ? {email}:{contact};
-    const isUserExist = await User.findOne(condition ).select(
-      "+password",
-    );
+    const condition = email ? { email } : { contact };
+    const isUserExist = await User.findOne(condition).select("+password");
     if (!isUserExist) {
       return res.status(404).json({
         message: "User not found",
@@ -89,9 +85,9 @@ const loginController = async function (req: Request, res: Response) {
   }
 };
 
-const getMe = async function(req:Request,res:Response) {
+const getMe = async function (req: Request, res: Response) {
   const user = req.user;
-  if(!user){
+  if (!user) {
     return res.status(400).json({
       message: "Not authenticated",
     });
@@ -106,6 +102,40 @@ const getMe = async function(req:Request,res:Response) {
       role: user.role,
     },
   });
-}
+};
 
-export { loginController, registerController ,getMe};
+const googleAuthController = passport.authenticate("google", {
+  scope: ["profile", "email"],
+});
+const googleCallbackController = (req: Request, res: Response) => {
+  passport.authenticate(
+    "google",
+    { session: false },
+    (error: any, user: InstanceType<typeof User> | false) => {
+      if (error || !user) {
+        console.error("Google authentication error", error);
+        return res.redirect(
+          `${config.FRONTEND_URL}/login?error=google_auth_failed`,
+        );
+      }
+      const token = jwt.sign({ id: user._id }, config.JWT_SECRET_KEY, {
+        expiresIn: "3d",
+      });
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: config.NODE_ENV === "production",
+        sameSite: config.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 3 * 24 * 60 * 60 * 1000,
+      });
+      return res.redirect(`${config.FRONTEND_URL}/`);
+    },
+  )(req, res);
+};
+
+export {
+  loginController,
+  registerController,
+  getMe,
+  googleAuthController,
+  googleCallbackController,
+};

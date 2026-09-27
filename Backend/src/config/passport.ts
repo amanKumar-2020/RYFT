@@ -12,26 +12,32 @@ passport.use(
     },
     async function (accessToken, refreshToken, profile, cb) {
       try {
-        console.log("Google profile:", profile);
-        const email = profile.emails?.[0]?.value;
+        const email = profile.emails?.[0]?.value?.toLowerCase();
+
         if (!email) {
           return cb(
             new Error("Google account does not provide an email"),
             false,
           );
         }
+
         const existingGoogleUser = await User.findOne({
           googleId: profile.id,
         });
+
         if (existingGoogleUser) {
           return cb(null, existingGoogleUser);
         }
 
-        const existingEmailUser = await User.findOne({ email });
+        const existingEmailUser = await User.findOne({
+          email,
+        });
 
         if (existingEmailUser) {
           existingEmailUser.googleId = profile.id;
+
           await existingEmailUser.save();
+
           return cb(null, existingEmailUser);
         }
 
@@ -41,6 +47,7 @@ passport.use(
           googleId: profile.id,
           role: "buyer",
         });
+
         return cb(null, newUser);
       } catch (error) {
         return cb(error, false);
