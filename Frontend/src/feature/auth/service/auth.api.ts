@@ -32,13 +32,13 @@ export async function register({
 export interface LoginSchema {
   email?: string;
   password: string;
-  contact?:string;
+  contact?: string;
 }
-export async function login({ email, password ,contact}: LoginSchema) {
+export async function login({ email, password, contact }: LoginSchema) {
   const response = await authApiInstance.post("/login", {
     email,
     password,
-    contact
+    contact,
   });
   return response.data;
 }

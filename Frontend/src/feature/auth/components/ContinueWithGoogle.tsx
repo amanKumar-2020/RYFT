@@ -1,9 +1,16 @@
 import "./ContinueWithGoogle.css";
 
 const ContinueWithGoogle = () => {
+  const handleGoogleLogin =()=>{
+    window.location.href = "/api/auth/google"
+  }
   return (
     <a href="/api/auth/google">
-      <button className="google-btn">
+      <button 
+      className="google-btn"
+      type="button"
+      onClick={handleGoogleLogin}
+      >
         <div className="google-icon-wrapper">
           <svg
             className="google-icon"

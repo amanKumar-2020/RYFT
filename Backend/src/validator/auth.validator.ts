@@ -15,7 +15,7 @@ export const validateRegister = z.object({
       message: "Please provide a valid Indian mobile number",
     }),
   password: z.string().trim().min(4, "password must be at least 4"),
-  role: z.boolean().default(false),
+  role: z.string().default("buyer"),
 });
 
 export const validateLogin = z
@@ -30,6 +30,6 @@ export const validateLogin = z
     },
     {
       message: "You must provide either an email or a phone number",
-      path: ["email"], 
+      path: ["email"],
     },
   );
